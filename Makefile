@@ -2,7 +2,7 @@
 #
 # Usus:
 #   make            — aedifica libison.a
-#   make purga     — dele omnia aedificata
+#   make purga      — dele omnia aedificata
 #   make proba      — aedifica et curre probationes (si adsunt)
 
 CC      ?= cc
