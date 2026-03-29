@@ -4,10 +4,10 @@
  * Legit schema et validat paria clavis-valor contra definitionem.
  */
 
-use crate::lector::IsonPar;
-use crate::navigator::{ison_da_chordam, ison_da_crudum, ison_claves};
-use crate::plicae::ison_lege_plicam;
 use crate::isonl::ison_pro_quaque_linea;
+use crate::lector::IsonPar;
+use crate::navigator::{ison_claves, ison_da_chordam, ison_da_crudum};
+use crate::plicae::ison_lege_plicam;
 
 const SCHEMA_CAMPI_MAX: usize = 32;
 
@@ -112,10 +112,7 @@ pub fn schema_valida(schema: &Schema, pares: &[IsonPar]) -> Result<(), String> {
         }
         let inventum = pares.iter().any(|p| p.clavis == campus.nomen);
         if !inventum {
-            return Err(format!(
-                "campus necessarius deest: \"{}\"",
-                campus.nomen
-            ));
+            return Err(format!("campus necessarius deest: \"{}\"", campus.nomen));
         }
     }
 

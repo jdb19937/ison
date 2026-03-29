@@ -5,7 +5,7 @@
  * sine arbore intermedia aedificanda.
  */
 
-use crate::lector::{transili_spatia, lege_chordam};
+use crate::lector::{lege_chordam, transili_spatia};
 
 /// Transili chordam ISON (pos ad '"' initialem). Reddit indicem post '"' terminalem.
 pub fn transili_chordam(octeti: &[u8], pos: usize) -> usize {
@@ -81,10 +81,7 @@ pub fn transili_valorem(octeti: &[u8], pos: usize) -> usize {
                 i += 1;
             }
             while i < octeti.len()
-                && matches!(
-                    octeti[i],
-                    b'0'..=b'9' | b'.' | b'e' | b'E' | b'+' | b'-'
-                )
+                && matches!(octeti[i], b'0'..=b'9' | b'.' | b'e' | b'E' | b'+' | b'-')
             {
                 i += 1;
             }

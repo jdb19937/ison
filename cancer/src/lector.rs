@@ -16,9 +16,7 @@ pub struct IsonPar {
 
 /// Transili spatia alba.
 pub fn transili_spatia(octeti: &[u8], mut pos: usize) -> usize {
-    while pos < octeti.len()
-        && matches!(octeti[pos], b' ' | b'\t' | b'\n' | b'\r')
-    {
+    while pos < octeti.len() && matches!(octeti[pos], b' ' | b'\t' | b'\n' | b'\r') {
         pos += 1;
     }
     pos
@@ -40,15 +38,15 @@ pub fn lege_chordam(octeti: &[u8], pos: usize) -> Option<(String, usize)> {
                 return None;
             }
             let c = match octeti[i] {
-                b'"'  => '"',
+                b'"' => '"',
                 b'\\' => '\\',
-                b'/'  => '/',
-                b'n'  => '\n',
-                b'r'  => '\r',
-                b't'  => '\t',
-                b'b'  => '\u{08}',
-                b'f'  => '\u{0c}',
-                b'u'  => {
+                b'/' => '/',
+                b'n' => '\n',
+                b'r' => '\r',
+                b't' => '\t',
+                b'b' => '\u{08}',
+                b'f' => '\u{0c}',
+                b'u' => {
                     /* transili \uXXXX, pone '?' */
                     if i + 4 < octeti.len() {
                         i += 4;
@@ -125,9 +123,7 @@ pub fn ison_lege(ison: &str, max_pares: usize) -> Option<Vec<IsonPar>> {
         } else {
             /* numeri, true, false, null */
             let initium = pos;
-            while pos < octeti.len()
-                && !matches!(octeti[pos], b',' | b'}' | b' ' | b'\t' | b'\n')
-            {
+            while pos < octeti.len() && !matches!(octeti[pos], b',' | b'}' | b' ' | b'\t' | b'\n') {
                 pos += 1;
             }
             let valor = String::from_utf8_lossy(&octeti[initium..pos]).into_owned();

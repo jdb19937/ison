@@ -9,10 +9,10 @@
  * Translatio fidelis ex C99 in Rustum.
  */
 
-pub mod scriptor;
-pub mod lector;
 pub mod effugium;
+pub mod isonl;
+pub mod lector;
 pub mod navigator;
 pub mod plicae;
-pub mod isonl;
 pub mod schema;
+pub mod scriptor;

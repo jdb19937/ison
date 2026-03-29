@@ -8,7 +8,7 @@ pub fn ison_effuge(textus: &str) -> String {
     let mut res = String::with_capacity(textus.len());
     for c in textus.chars() {
         match c {
-            '"'  => res.push_str("\\\""),
+            '"' => res.push_str("\\\""),
             '\\' => res.push_str("\\\\"),
             '\n' => res.push_str("\\n"),
             '\r' => res.push_str("\\r"),

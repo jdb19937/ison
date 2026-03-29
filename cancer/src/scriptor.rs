@@ -16,7 +16,7 @@ fn scribe_chordam(receptaculum: &mut String, s: &str) {
     receptaculum.push('"');
     for c in s.chars() {
         match c {
-            '"'  => receptaculum.push_str("\\\""),
+            '"' => receptaculum.push_str("\\\""),
             '\\' => receptaculum.push_str("\\\\"),
             '\n' => receptaculum.push_str("\\n"),
             '\r' => receptaculum.push_str("\\r"),
