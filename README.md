@@ -59,4 +59,4 @@ A complete, faithful Rust translation lives in `cancer/`. Zero external dependen
 
 ## License
 
-Free. Use however you like.
+Free. Public domain. Use however you like.
