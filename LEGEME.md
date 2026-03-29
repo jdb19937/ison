@@ -17,7 +17,7 @@ Bibliotheca C levis ad ISON (id est JSON) tractandum, sine ullis dependentiis ex
 ## Aedificatio
 
 ```
-make
+face
 ```
 
 Hoc aedificat `libison.a`. Opus est compilatore C99 et `ar` — instrumentis quae in quolibet systemate POSIX, Linux, vel macOS adsunt.
