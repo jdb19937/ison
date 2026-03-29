@@ -1,4 +1,4 @@
-# ISON — Instrumentum Structurae Objectorum Notationis
+# ISON Statuum Ordinalium Nova
 
 Bibliotheca C levis ad ISON (id est JSON) tractandum, sine ullis dependentiis externis. Omnia nomina functionum, variabilium, commentariorumque Latine classice scripta sunt.
 
