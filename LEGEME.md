@@ -7,7 +7,7 @@ Bibliotheca C levis ad ISON (id est JSON) tractandum, sine ullis dependentiis ex
 ## Partes
 
 | Pars | Descriptio |
-|------|------------|
+|---|---|
 | **Scriptor** | Aedificat objecta ISON par post par |
 | **Lector** | Extrahit paria clavis-valor ex objecto plano |
 | **Navigator** | Per viam punctatam (`"a.b[0].c"`) navigat ad valorem |
@@ -26,7 +26,7 @@ Hoc aedificat `libison.a`. Opus est compilatore C99 et `ar` — instrumentis qua
 
 Adde `ison.h` capiti tuo et conliga cum `-lison`:
 
-```c
+```
 #include "ison.h"
 
 /* scriptor — aedifica objectum */
@@ -85,7 +85,7 @@ schema_valida(&s, pp, n, err, sizeof(err));
 
 ## Cancer
 
-Translatio Rusta in directorio `cancer/` habetur. Non sustinetur.
+Translatio Rustica in `cancer/` iacet. Non curatur.
 
 ## Licentia
 
