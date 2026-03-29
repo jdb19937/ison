@@ -22,10 +22,6 @@ make
 
 Hoc aedificat `libison.a`. Opus est compilatore C99 et `ar` — instrumentis quae in quolibet systemate POSIX, Linux, vel macOS adsunt.
 
-```
-make mundum    # dele objecta et bibliothecam
-```
-
 ## Usus
 
 Adde `ison.h` capiti tuo et conliga cum `-lison`:
