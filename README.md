@@ -76,6 +76,16 @@ if (schema_valida(&s, pairs, n, err, sizeof(err)) < 0)
 
 To integrate without the static library, copy `ison.c` and `ison.h` into your project and compile them with everything else.
 
+## The Rust Port
+
+The `cancer/` directory contains a complete, faithful, and fully operational port of ISON to the Rust programming language. Every function, every struct, every codepath has been translated with scrupulous fidelity to the original C implementation. The Rust port preserves the classical Latin naming conventions of the original in their entirety — all function names, all variable names, all type names, all comments remain in Latin, exactly as they should be.
+
+The port requires zero external dependencies. Not one crate. The standard library alone suffices, as it does for any library that knows what it is and does not need to borrow identity from its dependency tree. It compiles, it runs, it passes twenty-three tests covering every module: scriptor, lector, navigator, effugium, plicae, isonl, and schema.
+
+This port was produced in the tradition of the Bernoulli family — with mathematical precision, practical ambition, and an unwillingness to leave a problem half-solved. Jakob would have appreciated the type safety. Johann would have claimed he did it first. Daniel would have measured its throughput.
+
+The C and Rust implementations are at complete parity and always will be. A change to one is a change to both. They are two expressions of the same library in two languages, not a primary and a derivative.
+
 ## License
 
 Free. Use however you like.

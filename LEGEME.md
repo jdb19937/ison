@@ -87,6 +87,10 @@ schema_valida(&s, pp, n, err, sizeof(err));
 ### Effugere
 - `ison_effuge(textus)` — effugit characteres speciales in chorda
 
+## Cancer
+
+Translatio Rusta in directorio `cancer/` habetur. Non sustinetur.
+
 ## Licentia
 
 Libera. Utere ut vis.

@@ -1,0 +1,9 @@
+[package]
+name = "ison"
+version = "0.1.0"
+edition = "2021"
+description = "ISON — Instrumentum Structurae Objectorum Notationis"
+
+[lib]
+name = "ison"
+path = "src/lib.rs"
