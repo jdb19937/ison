@@ -49,6 +49,26 @@ char *ison_da_chordam(const char *ison, const char *via);
 long ison_da_numerum(const char *ison, const char *via);
 
 /*
+ * ison_da_fractum: reddit valorem ut double (0.0 si non inventum).
+ * ison_da_f: idem cum praeferentia si via non inventa.
+ * ison_da_n: reddit valorem ut long cum praeferentia.
+ * Utramque formam tractant: valores quotati ("5778") et non quotati (5778).
+ */
+double ison_da_fractum(const char *ison, const char *via);
+double ison_da_f(const char *ison, const char *via, double praef);
+long   ison_da_n(const char *ison, const char *via, long praef);
+
+/*
+ * ison_pares_f/n/s: accessores pro tabula ison_par_t.
+ * ison_pares_s reddit "" si clavis non inventa (nulla allocatio).
+ */
+double      ison_pares_f(const ison_par_t *pp, int n,
+                         const char *clavis, double praef);
+long        ison_pares_n(const ison_par_t *pp, int n,
+                         const char *clavis, long praef);
+const char *ison_pares_s(const ison_par_t *pp, int n, const char *clavis);
+
+/*
  * ison_da_crudum: reddit valorem crudum (objectum, array, chordam, numerum)
  * ut chordam allocatam. vocans liberet per free().
  */
@@ -78,14 +98,22 @@ char *ison_lege_plicam(const char *via);
 typedef void (*ison_linea_functor_t)(const ison_par_t *pp, int n, void *ctx);
 int ison_pro_quaque_linea(const char *isonl, ison_linea_functor_t f, void *ctx);
 
+/*
+ * ison_pro_quaque_linea_s — ut supra, sed functor lineam crudissimam accipit.
+ * Utile ubi linea objecta imbrisa continet quae ison_lege transilit.
+ */
+typedef void (*ison_linea_s_functor_t)(const char *linea, void *ctx);
+int ison_pro_quaque_linea_s(const char *isonl, ison_linea_s_functor_t f, void *ctx);
+
 /* --- schema --- */
 
 #define SCHEMA_CAMPI_MAX 32
 
 /* typus campi */
 typedef enum {
-    TYPUS_CHORDA = 0,
-    TYPUS_NUMERUS
+    TYPUS_CHORDA = 0,    /* chorda (string) */
+    TYPUS_NUMERUS,       /* integer ("integer") */
+    TYPUS_FRACTUM        /* numerus fractus ("number" vel "fractum") */
 } typus_t;
 
 /* unus campus schematis */

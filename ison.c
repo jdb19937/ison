@@ -485,6 +485,78 @@ char *ison_da_crudum(const char *ison, const char *via)
 }
 
 /* ================================================================
+ * accessores cum praeferentiis et fractis
+ * ================================================================ */
+
+double ison_da_fractum(const char *ison, const char *via)
+{
+    const char *p = ison_naviga(ison, via);
+    if (!p) return 0.0;
+    p = transili_spatia(p);
+    if (*p == '"') {
+        /* valor in chorda: extrahe et converte */
+        char buf[64];
+        lege_chordam(p, buf, sizeof(buf));
+        return strtod(buf, NULL);
+    }
+    return strtod(p, NULL);
+}
+
+double ison_da_f(const char *ison, const char *via, double praef)
+{
+    const char *p = ison_naviga(ison, via);
+    if (!p) return praef;
+    p = transili_spatia(p);
+    if (*p == '"') {
+        char buf[64];
+        lege_chordam(p, buf, sizeof(buf));
+        return strtod(buf, NULL);
+    }
+    return strtod(p, NULL);
+}
+
+long ison_da_n(const char *ison, const char *via, long praef)
+{
+    const char *p = ison_naviga(ison, via);
+    if (!p) return praef;
+    p = transili_spatia(p);
+    if (*p == '"') {
+        char buf[64];
+        lege_chordam(p, buf, sizeof(buf));
+        return strtol(buf, NULL, 10);
+    }
+    return strtol(p, NULL, 10);
+}
+
+/* --- pares accessores --- */
+
+double ison_pares_f(const ison_par_t *pp, int n,
+                    const char *clavis, double praef)
+{
+    for (int i = 0; i < n; i++)
+        if (strcmp(pp[i].clavis, clavis) == 0)
+            return strtod(pp[i].valor, NULL);
+    return praef;
+}
+
+long ison_pares_n(const ison_par_t *pp, int n,
+                  const char *clavis, long praef)
+{
+    for (int i = 0; i < n; i++)
+        if (strcmp(pp[i].clavis, clavis) == 0)
+            return strtol(pp[i].valor, NULL, 10);
+    return praef;
+}
+
+const char *ison_pares_s(const ison_par_t *pp, int n, const char *clavis)
+{
+    for (int i = 0; i < n; i++)
+        if (strcmp(pp[i].clavis, clavis) == 0)
+            return pp[i].valor;
+    return "";
+}
+
+/* ================================================================
  * plicae
  * ================================================================ */
 
@@ -535,6 +607,34 @@ int ison_pro_quaque_linea(const char *isonl, ison_linea_functor_t f, void *ctx)
         int np = ison_lege(linea, pares, 32);
         if (np > 0)
             f(pares, np, ctx);
+        free(linea);
+        n++;
+
+        p = finis;
+    }
+    return n;
+}
+
+int ison_pro_quaque_linea_s(const char *isonl, ison_linea_s_functor_t f, void *ctx)
+{
+    int n = 0;
+    const char *p = isonl;
+    while (*p) {
+        while (*p == '\n' || *p == '\r' || *p == ' ' || *p == '\t')
+            p++;
+        if (!*p) break;
+
+        const char *finis = p;
+        while (*finis && *finis != '\n' && *finis != '\r')
+            finis++;
+
+        size_t lon = (size_t)(finis - p);
+        char *linea = malloc(lon + 1);
+        if (!linea) break;
+        memcpy(linea, p, lon);
+        linea[lon] = '\0';
+
+        f(linea, ctx);
         free(linea);
         n++;
 
@@ -602,6 +702,8 @@ int schema_lege(const char *ison, schema_t *s)
         if (typ) {
             if (strcmp(typ, "integer") == 0)
                 c->typus = TYPUS_NUMERUS;
+            else if (strcmp(typ, "number") == 0 || strcmp(typ, "fractum") == 0)
+                c->typus = TYPUS_FRACTUM;
             else
                 c->typus = TYPUS_CHORDA;
             free(typ);
@@ -666,6 +768,27 @@ static int est_numerus(const char *v)
     return 1;
 }
 
+/* est valor numerus fractus (vel integer)? */
+static int est_fractum(const char *v)
+{
+    if (!*v) return 0;
+    const char *p = v;
+    if (*p == '-') p++;
+    if (!*p) return 0;
+    int cifrae = 0;
+    while (isdigit((unsigned char)*p)) { cifrae++; p++; }
+    if (*p == '.') {
+        p++;
+        while (isdigit((unsigned char)*p)) { cifrae++; p++; }
+    }
+    if (*p == 'e' || *p == 'E') {
+        p++;
+        if (*p == '+' || *p == '-') p++;
+        while (isdigit((unsigned char)*p)) p++;
+    }
+    return cifrae > 0 && *p == '\0';
+}
+
 int schema_valida(const schema_t *s, const ison_par_t *pp, int n,
                   char *error, size_t mag)
 {
@@ -704,7 +827,13 @@ int schema_valida(const schema_t *s, const ison_par_t *pp, int n,
 
         if (c->typus == TYPUS_NUMERUS && !est_numerus(pp[j].valor)) {
             snprintf(error, mag,
-                     "campus \"%s\": expectatur numerus, datum \"%s\"",
+                     "campus \"%s\": expectatur integer, datum \"%s\"",
+                     c->nomen, pp[j].valor);
+            return -1;
+        }
+        if (c->typus == TYPUS_FRACTUM && !est_fractum(pp[j].valor)) {
+            snprintf(error, mag,
+                     "campus \"%s\": expectatur numerus fractus, datum \"%s\"",
                      c->nomen, pp[j].valor);
             return -1;
         }
