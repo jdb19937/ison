@@ -484,6 +484,30 @@ char *ison_da_crudum(const char *ison, const char *via)
     return res;
 }
 
+char *ison_compacta(const char *ison)
+{
+    if (!ison) return NULL;
+    size_t cap = strlen(ison) + 1;
+    char *res = malloc(cap);
+    if (!res) return NULL;
+    size_t n = 0;
+    int in_chorda = 0;
+    for (const char *p = ison; *p; p++) {
+        if (in_chorda) {
+            res[n++] = *p;
+            if (*p == '\\' && *(p+1)) { res[n++] = *++p; }
+            else if (*p == '"')       { in_chorda = 0; }
+        } else {
+            if (*p == '"')                          { in_chorda = 1; res[n++] = *p; }
+            else if (*p == ' ' || *p == '\t' ||
+                     *p == '\n' || *p == '\r')      { /* omitte */ }
+            else                                    { res[n++] = *p; }
+        }
+    }
+    res[n] = '\0';
+    return res;
+}
+
 /* ================================================================
  * accessores cum praeferentiis et fractis
  * ================================================================ */

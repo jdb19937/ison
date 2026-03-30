@@ -75,6 +75,12 @@ const char *ison_pares_s(const ison_par_t *pp, int n, const char *clavis);
 char *ison_da_crudum(const char *ison, const char *via);
 
 /*
+ * ison_compacta: reddit ISON in forma compacta (una linea, sine spatiis
+ * superfluis extra chordas). vocans liberet per free(). reddit NULL si error.
+ */
+char *ison_compacta(const char *ison);
+
+/*
  * ison_claves: extrahe claves primi gradus objecti ISON.
  * scribit in tabulam clavium, reddit numerum clavium.
  */
