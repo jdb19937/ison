@@ -16,10 +16,14 @@
 typedef struct ison_scriptor ison_scriptor_t;
 
 ison_scriptor_t *ison_scriptor_crea(void);
-void ison_scriptor_adde(ison_scriptor_t *js, const char *clavis,
-                        const char *valor);
-void ison_scriptor_adde_crudum(ison_scriptor_t *js, const char *clavis,
-                               const char *valor);
+void ison_scriptor_adde(
+    ison_scriptor_t *js, const char *clavis,
+    const char *valor
+);
+void ison_scriptor_adde_crudum(
+    ison_scriptor_t *js, const char *clavis,
+    const char *valor
+);
 char *ison_scriptor_fini(ison_scriptor_t *js);
 
 /* --- lector parium (objectum planum) --- */
@@ -62,10 +66,14 @@ long   ison_da_n(const char *ison, const char *via, long praef);
  * ison_pares_f/n/s: accessores pro tabula ison_par_t.
  * ison_pares_s reddit "" si clavis non inventa (nulla allocatio).
  */
-double      ison_pares_f(const ison_par_t *pp, int n,
-                         const char *clavis, double praef);
-long        ison_pares_n(const ison_par_t *pp, int n,
-                         const char *clavis, long praef);
+double      ison_pares_f(
+    const ison_par_t *pp, int n,
+    const char *clavis, double praef
+);
+long        ison_pares_n(
+    const ison_par_t *pp, int n,
+    const char *clavis, long praef
+);
 const char *ison_pares_s(const ison_par_t *pp, int n, const char *clavis);
 
 /*
@@ -152,8 +160,10 @@ int schema_lege_plicam(const char *via, schema_t *s);
  * schema_valida — validat paria contra schema.
  * reddit 0 si validum. si invalidum, scribit errorem in buf et reddit -1.
  */
-int schema_valida(const schema_t *s, const ison_par_t *pp, int n,
-                  char *error, size_t mag);
+int schema_valida(
+    const schema_t *s, const ison_par_t *pp, int n,
+    char *error, size_t mag
+);
 
 /*
  * schema_valida_isonl — validat plicam ISONL contra schema.

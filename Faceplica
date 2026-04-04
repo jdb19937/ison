@@ -14,8 +14,6 @@ FONTES  = ison.c
 OBJECTA = $(FONTES:.c=.o)
 BIBLIOTHECA = libison.a
 
-.PHONY: omnia purga proba
-
 omnia: $(BIBLIOTHECA)
 
 $(BIBLIOTHECA): $(OBJECTA)
@@ -27,5 +25,10 @@ $(BIBLIOTHECA): $(OBJECTA)
 purga:
 	rm -f $(OBJECTA) $(BIBLIOTHECA)
 
+linte:
+	insinulint -c ison.c ison.h
+
 proba: $(BIBLIOTHECA)
 	@echo "libison.a aedificata est. nulla probatio adhuc."
+
+.PHONY: omnia purga proba linte
