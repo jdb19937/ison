@@ -30,12 +30,15 @@ colloca: omnia
 	install -m 644 ison.h $(PREFIX)/include/ison/
 
 purga:
-	rm -f $(OBJECTA) $(BIBLIOTHECA)
+	rm -f $(OBJECTA) $(BIBLIOTHECA) proba_ison
 
 linte:
-	insinulint -c ison.c ison.h
+	insinulint -c ison.c ison.h proba_ison.c
 
-proba: $(BIBLIOTHECA)
-	@echo "libison.a aedificata est. nulla probatio adhuc."
+proba_ison: proba_ison.c $(BIBLIOTHECA)
+	$(CC) $(CFLAGS) -o $@ $< -L. -lison
+
+proba: proba_ison
+	./proba_ison
 
 .PHONY: omnia colloca purga proba linte
