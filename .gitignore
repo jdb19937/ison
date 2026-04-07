@@ -1,3 +1,5 @@
 *.o
 libison.a
 cancer/target
+proba_ison
+proba_schema

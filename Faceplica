@@ -33,12 +33,16 @@ purga:
 	rm -f $(OBJECTA) $(BIBLIOTHECA) proba_ison
 
 linte:
-	insinulint -c ison.c ison.h proba_ison.c
+	insinulint -c ison.c ison.h proba_ison.c proba_schema.c
 
 proba_ison: proba_ison.c $(BIBLIOTHECA)
 	$(CC) $(CFLAGS) -o $@ $< -L. -lison
 
-proba: proba_ison
+proba_schema: proba_schema.c $(BIBLIOTHECA)
+	$(CC) $(CFLAGS) -o $@ $< -L. -lison
+
+proba: proba_ison proba_schema
 	./proba_ison
+	./proba_schema
 
 .PHONY: omnia colloca purga proba linte
