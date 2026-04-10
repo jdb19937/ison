@@ -94,6 +94,11 @@ char *ison_compacta(const char *ison);
  */
 int ison_claves(const char *ison, char claves[][64], int max);
 
+/*
+ * nav_transili_valorem: transili valorem ISON et redde indicem post valorem.
+ */
+const char *nav_transili_valorem(const char *p);
+
 /* --- plicae --- */
 
 /*

@@ -54,13 +54,15 @@ static char *lege_stdin(void)
     return buf;
 }
 
-/* inspicit num datum plures lineas habeat (ISONL) */
+/* inspicit num datum plures obiecta ISON habeat (ISONL) */
 static int est_isonl(const char *datum)
 {
-    const char *p = strchr(datum, '\n');
-    if (!p)
+    const char *p = datum;
+    while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n')
+        p++;
+    if (*p != '{')
         return 0;
-    p++;
+    p = nav_transili_valorem(p);
     while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n')
         p++;
     return *p != '\0';

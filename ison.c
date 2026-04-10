@@ -152,7 +152,7 @@ char *ison_scriptor_fini(ison_scriptor_t *js)
  * ================================================================ */
 
 /* declaratio anticipata */
-static const char *nav_transili_valorem(const char *p);
+const char *nav_transili_valorem(const char *p);
 
 static const char *transili_spatia(const char *p)
 {
@@ -268,8 +268,9 @@ int ison_lege(const char *ison, ison_par_t *pares, int max_pares)
                 return -1;
         } else if (*p == '{' || *p == '[') {
             /* transili objecta et indices */
+            valor[0] = *p;
+            valor[1] = '\0';
             p = nav_transili_valorem(p);
-            continue;
         } else {
             /* numeri, true, false, null */
             size_t i = 0;
@@ -377,7 +378,7 @@ static const char *nav_transili_chordam(const char *p)
 }
 
 /* transili quemlibet valorem ISON. reddit post valorem. */
-static const char *nav_transili_valorem(const char *p)
+const char *nav_transili_valorem(const char *p)
 {
     p = transili_spatia(p);
     switch (*p) {

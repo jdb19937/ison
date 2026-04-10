@@ -225,6 +225,166 @@ static char *scribe_plicam_temp(const char *praefixum, const char *contentum)
     return via;
 }
 
+static void proba_omnes_necessarios(void)
+{
+    printf("omnes campi necessarii:\n");
+
+    const char *sch =
+        "{\"titulus\":\"Strictum\","
+        "\"properties\":{\"a\":{\"type\":\"string\"},"
+        "\"b\":{\"type\":\"integer\"},"
+        "\"c\":{\"type\":\"number\"}},"
+        "\"required\":[\"a\",\"b\",\"c\"]}";
+
+    schema_t s;
+    schema_lege(sch, &s);
+    ison_par_t pp[8];
+    char err[256];
+    int n;
+
+    /* omnes adsunt */
+    const char *plenum = "{\"a\":\"x\",\"b\":\"1\",\"c\":\"2.5\"}";
+    n = ison_lege(plenum, pp, 8);
+    adfirma(
+        schema_valida(&s, pp, n, err, sizeof(err)) == 0,
+        "omnes campi praesentes acceptantur"
+    );
+
+    /* unus deest */
+    const char *sine_b = "{\"a\":\"x\",\"c\":\"2.5\"}";
+    n = ison_lege(sine_b, pp, 8);
+    adfirma(
+        schema_valida(&s, pp, n, err, sizeof(err)) != 0,
+        "reicit cum b deest"
+    );
+    adfirma(strstr(err, "b") != NULL, "error nominat b");
+
+    /* duo desunt */
+    const char *solum_a = "{\"a\":\"x\"}";
+    n = ison_lege(solum_a, pp, 8);
+    adfirma(
+        schema_valida(&s, pp, n, err, sizeof(err)) != 0,
+        "reicit cum b et c desunt"
+    );
+
+    /* vacuum */
+    n = 0;
+    adfirma(
+        schema_valida(&s, pp, n, err, sizeof(err)) != 0,
+        "reicit datum vacuum"
+    );
+}
+
+static void proba_objecta_nidata(void)
+{
+    printf("objecta nidata:\n");
+
+    const char *sch =
+        "{\"titulus\":\"Nidus\","
+        "\"properties\":{\"alpha\":{\"type\":\"string\"},"
+        "\"beta\":{\"type\":\"string\"}},"
+        "\"required\":[\"alpha\",\"beta\"]}";
+
+    schema_t s;
+    schema_lege(sch, &s);
+    ison_par_t pp[8];
+    char err[256];
+    int n;
+
+    /* valor est obiectum — clavis debet in paribus manere */
+    const char *cum_obj =
+        "{\"alpha\":\"salve\",\"beta\":{\"x\":\"1\"}}";
+    n = ison_lege(cum_obj, pp, 8);
+    adfirma(n == 2, "ison_lege numerat campos cum objectis");
+    adfirma(
+        schema_valida(&s, pp, n, err, sizeof(err)) == 0,
+        "acceptat valorem obiectum"
+    );
+
+    /* campus necessarius est obiectum sed deest */
+    const char *sine_beta = "{\"alpha\":\"salve\"}";
+    n = ison_lege(sine_beta, pp, 8);
+    adfirma(
+        schema_valida(&s, pp, n, err, sizeof(err)) != 0,
+        "reicit cum campo necessario deest"
+    );
+
+    /* campus ignotus est obiectum */
+    const char *ignotum_obj =
+        "{\"alpha\":\"salve\",\"beta\":\"vale\",\"gamma\":{\"z\":\"9\"}}";
+    n = ison_lege(ignotum_obj, pp, 8);
+    adfirma(n == 3, "ison_lege numerat campum ignotum obiectum");
+    adfirma(
+        schema_valida(&s, pp, n, err, sizeof(err)) != 0,
+        "reicit campum ignotum obiectum"
+    );
+
+    /* valor est index */
+    const char *cum_idx =
+        "{\"alpha\":\"salve\",\"beta\":[1,2,3]}";
+    n = ison_lege(cum_idx, pp, 8);
+    adfirma(n == 2, "ison_lege numerat campos cum indicibus");
+}
+
+static void proba_ison_multilineum(void)
+{
+    printf("binarium cum ISON multilineo:\n");
+
+    const char *schema_ison =
+        "{\"titulus\":\"Nidus\","
+        "\"properties\":{\"a\":{\"type\":\"string\"},"
+        "\"b\":{\"type\":\"string\"}},"
+        "\"required\":[\"a\",\"b\"]}";
+
+    /* ISON multilineum validum — non est ISONL */
+    const char *datum_bonum =
+        "{\n"
+        "  \"a\": \"salve\",\n"
+        "  \"b\": \"vale\"\n"
+        "}\n";
+
+    /* ISON multilineum cum campis ignotis — debet fallere */
+    const char *datum_malum =
+        "{\n"
+        "  \"x\": \"salve\",\n"
+        "  \"y\": \"vale\"\n"
+        "}\n";
+
+    char *via_schema = scribe_plicam_temp("sch_ml", schema_ison);
+    char *via_bonum  = scribe_plicam_temp("bon_ml", datum_bonum);
+    char *via_malum  = scribe_plicam_temp("mal_ml", datum_malum);
+
+    char mandatum[512];
+    int r;
+
+    snprintf(
+        mandatum, sizeof(mandatum),
+        "./valida_schema %s %s >/dev/null 2>&1", via_schema, via_bonum
+    );
+    r = system(mandatum);
+    adfirma(
+        WEXITSTATUS(r) == 0,
+        "ISON multilineum validum acceptatur"
+    );
+
+    snprintf(
+        mandatum, sizeof(mandatum),
+        "./valida_schema %s %s >/dev/null 2>&1", via_schema, via_malum
+    );
+    r = system(mandatum);
+    adfirma(
+        WEXITSTATUS(r) == 1,
+        "ISON multilineum invalidum reicitur"
+    );
+
+    remove(via_schema);
+    remove(via_bonum);
+    remove(via_malum);
+    free(via_schema);
+    free(via_bonum);
+    free(via_malum);
+}
+
 static void proba_binarium(void)
 {
     printf("binarium valida_schema:\n");
@@ -286,6 +446,9 @@ int main(void)
     proba_campum_ignotum();
     proba_fractum();
     proba_isonl_validationem();
+    proba_omnes_necessarios();
+    proba_objecta_nidata();
+    proba_ison_multilineum();
     proba_binarium();
 
     printf("\n");
