@@ -214,7 +214,10 @@ static char *scribe_plicam_temp(const char *praefixum, const char *contentum)
     char *via = malloc(256);
     snprintf(via, 256, "/tmp/%s_XXXXXX", praefixum);
     int fd = mkstemp(via);
-    if (fd < 0) { free(via); return NULL; }
+    if (fd < 0) {
+        free(via);
+        return NULL;
+    }
 
     FILE *f = fdopen(fd, "w");
     fputs(contentum, f);
@@ -245,14 +248,16 @@ static void proba_binarium(void)
     int r;
 
     /* datum validum */
-    snprintf(mandatum, sizeof(mandatum),
+    snprintf(
+        mandatum, sizeof(mandatum),
         "./valida_schema %s %s >/dev/null 2>&1", via_schema, via_bonum
     );
     r = system(mandatum);
     adfirma(WEXITSTATUS(r) == 0, "binarium accipit datum validum");
 
     /* datum invalidum */
-    snprintf(mandatum, sizeof(mandatum),
+    snprintf(
+        mandatum, sizeof(mandatum),
         "./valida_schema %s %s >/dev/null 2>&1", via_schema, via_malum
     );
     r = system(mandatum);

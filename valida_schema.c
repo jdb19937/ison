@@ -19,7 +19,8 @@ static const char *nomen_programma;
 
 static void usus(void)
 {
-    fprintf(stderr,
+    fprintf(
+        stderr,
         "Usus: %s <schema.ison> <datum.ison|datum.isonl|->\n"
         "\n"
         "  Validat datum ISON vel ISONL contra schema.\n"
@@ -32,8 +33,9 @@ static void usus(void)
 static char *lege_stdin(void)
 {
     size_t mag = 0, cap = 4096;
-    char *buf = malloc(cap);
-    if (!buf) return NULL;
+    char *buf  = malloc(cap);
+    if (!buf)
+        return NULL;
 
     size_t n;
     while ((n = fread(buf + mag, 1, cap - mag, stdin)) > 0) {
@@ -41,7 +43,10 @@ static char *lege_stdin(void)
         if (mag == cap) {
             cap *= 2;
             char *novum = realloc(buf, cap);
-            if (!novum) { free(buf); return NULL; }
+            if (!novum) {
+                free(buf);
+                return NULL;
+            }
             buf = novum;
         }
     }
@@ -53,9 +58,11 @@ static char *lege_stdin(void)
 static int est_isonl(const char *datum)
 {
     const char *p = strchr(datum, '\n');
-    if (!p) return 0;
+    if (!p)
+        return 0;
     p++;
-    while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n') p++;
+    while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n')
+        p++;
     return *p != '\0';
 }
 
