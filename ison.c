@@ -932,10 +932,12 @@ int schema_lege(const char *ison, schema_t *s)
     char claves[32][64];
     int nk = ison_claves(ison, claves, 32);
     for (int i = 0; i < nk; i++) {
-        if (strcmp(claves[i], "titulus") != 0 &&
+        if (
+            strcmp(claves[i], "titulus") != 0 &&
             strcmp(claves[i], "properties") != 0 &&
             strcmp(claves[i], "required") != 0 &&
-            strcmp(claves[i], "oneOf") != 0)
+            strcmp(claves[i], "oneOf") != 0
+        )
             return -1;
     }
 
@@ -970,9 +972,11 @@ int schema_lege(const char *ison, schema_t *s)
                 char pk[8][64];
                 int npk = ison_claves(prop_json, pk, 8);
                 for (int k = 0; k < npk; k++) {
-                    if (strcmp(pk[k], "type") != 0 &&
+                    if (
+                        strcmp(pk[k], "type") != 0 &&
                         strcmp(pk[k], "$ref") != 0 &&
-                        strcmp(pk[k], "items") != 0) {
+                        strcmp(pk[k], "items") != 0
+                    ) {
                         free(prop_json);
                         free(prop_crudum);
                         return -1;
@@ -1297,7 +1301,7 @@ static int valida_proprietates(
 
             /* itera per elementa seriei */
             const char *p = crudum + 1;
-            int idx = 0;
+            int idx       = 0;
             while (*p) {
                 while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r')
                     p++;
@@ -1310,8 +1314,8 @@ static int valida_proprietates(
                 if (*p == '{') {
                     const char *ini = p;
                     const char *fin = nav_transili_valorem(p);
-                    size_t lon = (size_t)(fin - ini);
-                    char *elem = malloc(lon + 1);
+                    size_t lon      = (size_t)(fin - ini);
+                    char *elem      = malloc(lon + 1);
                     memcpy(elem, ini, lon);
                     elem[lon] = '\0';
 
@@ -1372,9 +1376,11 @@ static int valida_unum_ex(
         schema_lege_plicam(via_ref, &sub);
 
         char sub_err[256];
-        if (schema_valida(
+        if (
+            schema_valida(
                 &sub, pp, n, datum, sub_err, sizeof(sub_err)
-            ) == 0)
+            ) == 0
+        )
             return 0;
     }
 
