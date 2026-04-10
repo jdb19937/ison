@@ -14,7 +14,7 @@ FONTES  = ison.c
 OBJECTA = $(FONTES:.c=.o)
 BIBLIOTHECA = libison.a
 
-omnia: $(BIBLIOTHECA) valida_schema
+omnia: $(BIBLIOTHECA) valida_schema iq
 
 $(BIBLIOTHECA): $(OBJECTA)
 	$(AR) $(ARFLAGS) $@ $^
@@ -27,17 +27,21 @@ PREFIX = /opt/apotheca
 valida_schema: valida_schema.c $(BIBLIOTHECA)
 	$(CC) $(CFLAGS) -o $@ $< -L. -lison
 
+iq: iq.c $(BIBLIOTHECA)
+	$(CC) $(CFLAGS) -o $@ $< -L. -lison
+
 colloca: omnia
 	install -d $(PREFIX)/lib $(PREFIX)/include/ison $(PREFIX)/bin
 	install -m 644 $(BIBLIOTHECA) $(PREFIX)/lib/
 	install -m 644 ison.h $(PREFIX)/include/ison/
 	install -m 755 valida_schema $(PREFIX)/bin/
+	install -m 755 iq $(PREFIX)/bin/
 
 purga:
-	rm -f $(OBJECTA) $(BIBLIOTHECA) proba_ison proba_schema valida_schema
+	rm -f $(OBJECTA) $(BIBLIOTHECA) proba_ison proba_schema valida_schema iq proba_iq
 
 linte:
-	insinulint -c ison.c ison.h proba_ison.c proba_schema.c valida_schema.c
+	insinulint -c ison.c ison.h proba_ison.c proba_schema.c valida_schema.c iq.c proba_iq.c
 
 proba_ison: proba_ison.c $(BIBLIOTHECA)
 	$(CC) $(CFLAGS) -o $@ $< -L. -lison
@@ -45,8 +49,12 @@ proba_ison: proba_ison.c $(BIBLIOTHECA)
 proba_schema: proba_schema.c $(BIBLIOTHECA)
 	$(CC) $(CFLAGS) -o $@ $< -L. -lison
 
-proba: proba_ison proba_schema valida_schema
+proba_iq: proba_iq.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+proba: proba_ison proba_schema valida_schema iq proba_iq
 	./proba_ison
 	./proba_schema
+	./proba_iq
 
 .PHONY: omnia colloca purga proba linte

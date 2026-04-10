@@ -270,7 +270,7 @@ int ison_lege(const char *ison, ison_par_t *pares, int max_pares)
             /* transili objecta et indices */
             valor[0] = *p;
             valor[1] = '\0';
-            p = nav_transili_valorem(p);
+            p        = nav_transili_valorem(p);
         } else {
             /* numeri, true, false, null */
             size_t i = 0;
