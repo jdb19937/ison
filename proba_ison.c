@@ -136,7 +136,7 @@ static void proba_schema(void)
     printf("schema:\n");
 
     const char *sch =
-        "{\"title\":\"Proba\","
+        "{\"titulus\":\"Proba\","
         "\"properties\":{\"nomen\":{\"type\":\"string\"},"
         "\"aetas\":{\"type\":\"integer\"}},"
         "\"required\":[\"nomen\"]}";
@@ -150,11 +150,11 @@ static void proba_schema(void)
     ison_par_t pp[8];
     int n = ison_lege(bonum, pp, 8);
     char err[256];
-    adfirma(schema_valida(&s, pp, n, err, sizeof(err)) == 0, "validum");
+    adfirma(schema_valida(&s, pp, n, NULL, err, sizeof(err)) == 0, "validum");
 
     const char *malum = "{\"aetas\":\"xxx\"}";
     n = ison_lege(malum, pp, 8);
-    adfirma(schema_valida(&s, pp, n, err, sizeof(err)) != 0, "invalidum");
+    adfirma(schema_valida(&s, pp, n, NULL, err, sizeof(err)) != 0, "invalidum");
 }
 
 /* --- ISONL --- */

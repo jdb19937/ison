@@ -57,13 +57,13 @@ static void proba_validum(void)
 
     const char *bonum = "{\"nomen\":\"Marcus\",\"aetas\":\"30\"}";
     int n = ison_lege(bonum, pp, 8);
-    adfirma(schema_valida(&s, pp, n, err, sizeof(err)) == 0, "omnia bona");
+    adfirma(schema_valida(&s, pp, n, NULL, err, sizeof(err)) == 0, "omnia bona");
 
     /* campus non necessarius omissus */
     const char *sine_aetate = "{\"nomen\":\"Marcus\"}";
     n = ison_lege(sine_aetate, pp, 8);
     adfirma(
-        schema_valida(&s, pp, n, err, sizeof(err)) == 0,
+        schema_valida(&s, pp, n, NULL, err, sizeof(err)) == 0,
         "campus optionalis omissus"
     );
 
@@ -71,7 +71,7 @@ static void proba_validum(void)
     const char *neg = "{\"nomen\":\"Marcus\",\"aetas\":\"-5\"}";
     n = ison_lege(neg, pp, 8);
     adfirma(
-        schema_valida(&s, pp, n, err, sizeof(err)) == 0,
+        schema_valida(&s, pp, n, NULL, err, sizeof(err)) == 0,
         "numerus negativus validus"
     );
 }
@@ -94,7 +94,7 @@ static void proba_campum_deestem(void)
     const char *deest = "{\"aetas\":\"30\"}";
     int n = ison_lege(deest, pp, 8);
     adfirma(
-        schema_valida(&s, pp, n, err, sizeof(err)) != 0,
+        schema_valida(&s, pp, n, NULL, err, sizeof(err)) != 0,
         "reicitur"
     );
     adfirma(strstr(err, "nomen") != NULL, "error nominat campum");
@@ -118,7 +118,7 @@ static void proba_typum_malum(void)
     const char *non_num = "{\"nomen\":\"Marcus\",\"aetas\":\"xxx\"}";
     int n = ison_lege(non_num, pp, 8);
     adfirma(
-        schema_valida(&s, pp, n, err, sizeof(err)) != 0,
+        schema_valida(&s, pp, n, NULL, err, sizeof(err)) != 0,
         "integer invalidus"
     );
     adfirma(strstr(err, "aetas") != NULL, "error nominat campum");
@@ -141,7 +141,7 @@ static void proba_campum_ignotum(void)
     const char *ignotum = "{\"nomen\":\"Marcus\",\"color\":\"ruber\"}";
     int n = ison_lege(ignotum, pp, 8);
     adfirma(
-        schema_valida(&s, pp, n, err, sizeof(err)) != 0,
+        schema_valida(&s, pp, n, NULL, err, sizeof(err)) != 0,
         "reicitur"
     );
     adfirma(strstr(err, "color") != NULL, "error nominat campum ignotum");
@@ -165,21 +165,21 @@ static void proba_fractum(void)
     const char *bonum = "{\"nomen\":\"Ferrum\",\"pondus\":\"3.14\"}";
     int n = ison_lege(bonum, pp, 8);
     adfirma(
-        schema_valida(&s, pp, n, err, sizeof(err)) == 0,
+        schema_valida(&s, pp, n, NULL, err, sizeof(err)) == 0,
         "fractum validum"
     );
 
     const char *exp = "{\"nomen\":\"Ferrum\",\"pondus\":\"-2.5e3\"}";
     n = ison_lege(exp, pp, 8);
     adfirma(
-        schema_valida(&s, pp, n, err, sizeof(err)) == 0,
+        schema_valida(&s, pp, n, NULL, err, sizeof(err)) == 0,
         "fractum cum exponente"
     );
 
     const char *malum = "{\"nomen\":\"Ferrum\",\"pondus\":\"abc\"}";
     n = ison_lege(malum, pp, 8);
     adfirma(
-        schema_valida(&s, pp, n, err, sizeof(err)) != 0,
+        schema_valida(&s, pp, n, NULL, err, sizeof(err)) != 0,
         "fractum invalidum"
     );
 }
@@ -246,7 +246,7 @@ static void proba_omnes_necessarios(void)
     const char *plenum = "{\"a\":\"x\",\"b\":\"1\",\"c\":\"2.5\"}";
     n = ison_lege(plenum, pp, 8);
     adfirma(
-        schema_valida(&s, pp, n, err, sizeof(err)) == 0,
+        schema_valida(&s, pp, n, NULL, err, sizeof(err)) == 0,
         "omnes campi praesentes acceptantur"
     );
 
@@ -254,7 +254,7 @@ static void proba_omnes_necessarios(void)
     const char *sine_b = "{\"a\":\"x\",\"c\":\"2.5\"}";
     n = ison_lege(sine_b, pp, 8);
     adfirma(
-        schema_valida(&s, pp, n, err, sizeof(err)) != 0,
+        schema_valida(&s, pp, n, NULL, err, sizeof(err)) != 0,
         "reicit cum b deest"
     );
     adfirma(strstr(err, "b") != NULL, "error nominat b");
@@ -263,14 +263,14 @@ static void proba_omnes_necessarios(void)
     const char *solum_a = "{\"a\":\"x\"}";
     n = ison_lege(solum_a, pp, 8);
     adfirma(
-        schema_valida(&s, pp, n, err, sizeof(err)) != 0,
+        schema_valida(&s, pp, n, NULL, err, sizeof(err)) != 0,
         "reicit cum b et c desunt"
     );
 
     /* vacuum */
     n = 0;
     adfirma(
-        schema_valida(&s, pp, n, err, sizeof(err)) != 0,
+        schema_valida(&s, pp, n, NULL, err, sizeof(err)) != 0,
         "reicit datum vacuum"
     );
 }
@@ -297,7 +297,7 @@ static void proba_objecta_nidata(void)
     n = ison_lege(cum_obj, pp, 8);
     adfirma(n == 2, "ison_lege numerat campos cum objectis");
     adfirma(
-        schema_valida(&s, pp, n, err, sizeof(err)) == 0,
+        schema_valida(&s, pp, n, NULL, err, sizeof(err)) == 0,
         "acceptat valorem obiectum"
     );
 
@@ -305,7 +305,7 @@ static void proba_objecta_nidata(void)
     const char *sine_beta = "{\"alpha\":\"salve\"}";
     n = ison_lege(sine_beta, pp, 8);
     adfirma(
-        schema_valida(&s, pp, n, err, sizeof(err)) != 0,
+        schema_valida(&s, pp, n, NULL, err, sizeof(err)) != 0,
         "reicit cum campo necessario deest"
     );
 
@@ -315,7 +315,7 @@ static void proba_objecta_nidata(void)
     n = ison_lege(ignotum_obj, pp, 8);
     adfirma(n == 3, "ison_lege numerat campum ignotum obiectum");
     adfirma(
-        schema_valida(&s, pp, n, err, sizeof(err)) != 0,
+        schema_valida(&s, pp, n, NULL, err, sizeof(err)) != 0,
         "reicit campum ignotum obiectum"
     );
 
@@ -435,6 +435,118 @@ static void proba_binarium(void)
     free(via_malum);
 }
 
+static void proba_ref_deestem(void)
+{
+    printf("$ref plica deest:\n");
+
+    /* schema cum array items.$ref ad plicam non existentem */
+    const char *sch_series =
+        "{\"titulus\":\"S\","
+        "\"properties\":{\"res\":{\"type\":\"array\","
+        "\"items\":{\"$ref\":\"non_existit.ison\"}}},"
+        "\"required\":[]}";
+
+    schema_t s;
+    int r = schema_lege(sch_series, &s);
+    adfirma(r == 0, "schema cum $ref lecta");
+    adfirma(s.campi[0].typus == TYPUS_SERIES, "typus series");
+
+    /* validatio debet fallere quia $ref non existit */
+    const char *datum = "{\"res\":[{\"a\":\"1\"}]}";
+    ison_par_t pp[8];
+    int n = ison_lege(datum, pp, 8);
+    char err[256];
+    adfirma(
+        schema_valida(&s, pp, n, datum, err, sizeof(err)) != 0,
+        "reicit quia $ref series non existit"
+    );
+    adfirma(
+        strstr(err, "legi non potest") != NULL,
+        "error nominat plicam deestem"
+    );
+
+    /* schema oneOf cum $ref ad plicam non existentem */
+    const char *sch_oneof =
+        "{\"titulus\":\"U\","
+        "\"oneOf\":[{\"$ref\":\"non_existit.ison\"}]}";
+    r = schema_lege(sch_oneof, &s);
+    adfirma(r == 0, "schema oneOf lecta");
+
+    const char *datum2 = "{\"a\":\"1\"}";
+    n = ison_lege(datum2, pp, 8);
+    adfirma(
+        schema_valida(&s, pp, n, datum2, err, sizeof(err)) != 0,
+        "reicit quia $ref oneOf non existit"
+    );
+    adfirma(
+        strstr(err, "legi non potest") != NULL,
+        "error oneOf nominat plicam deestem"
+    );
+
+    /* schema cum objectum $ref ad plicam non existentem */
+    const char *sch_obj =
+        "{\"titulus\":\"O\","
+        "\"properties\":{\"sub\":{\"$ref\":\"non_existit.ison\"}},"
+        "\"required\":[]}";
+    r = schema_lege(sch_obj, &s);
+    adfirma(r == 0, "schema cum $ref objectum lecta");
+
+    const char *datum3 = "{\"sub\":{\"x\":\"1\"}}";
+    n = ison_lege(datum3, pp, 8);
+    adfirma(
+        schema_valida(&s, pp, n, datum3, err, sizeof(err)) != 0,
+        "reicit quia $ref objectum non existit"
+    );
+}
+
+static void proba_constructiones_ignotas(void)
+{
+    printf("constructiones ignotae:\n");
+
+    schema_t s;
+
+    /* clavis summi gradus ignota */
+    const char *sch1 =
+        "{\"titulus\":\"X\","
+        "\"properties\":{\"a\":{\"type\":\"string\"}},"
+        "\"ignotum\":\"valor\"}";
+    adfirma(schema_lege(sch1, &s) != 0, "reicit clavem ignotam");
+
+    /* typus ignotus in proprietate */
+    const char *sch2 =
+        "{\"titulus\":\"X\","
+        "\"properties\":{\"a\":{\"type\":\"boolean\"}}}";
+    adfirma(schema_lege(sch2, &s) != 0, "reicit typum ignotum");
+
+    /* proprietas sine type et sine $ref */
+    const char *sch3 =
+        "{\"titulus\":\"X\","
+        "\"properties\":{\"a\":{\"minimum\":\"0\"}}}";
+    adfirma(schema_lege(sch3, &s) != 0, "reicit sine type et $ref");
+
+    /* array sine items.$ref */
+    const char *sch4 =
+        "{\"titulus\":\"X\","
+        "\"properties\":{\"a\":{\"type\":\"array\"}}}";
+    adfirma(schema_lege(sch4, &s) != 0, "reicit array sine items");
+
+    /* nec properties nec oneOf */
+    const char *sch5 = "{\"titulus\":\"X\"}";
+    adfirma(schema_lege(sch5, &s) != 0, "reicit sine properties et oneOf");
+
+    /* oneOf cum voce sine $ref */
+    const char *sch6 =
+        "{\"titulus\":\"X\","
+        "\"oneOf\":[{\"type\":\"string\"}]}";
+    adfirma(schema_lege(sch6, &s) != 0, "reicit oneOf sine $ref");
+
+    /* oneOf vacuum */
+    const char *sch7 =
+        "{\"titulus\":\"X\","
+        "\"oneOf\":[]}";
+    adfirma(schema_lege(sch7, &s) != 0, "reicit oneOf vacuum");
+}
+
 int main(void)
 {
     printf("--- probationes schematis ---\n\n");
@@ -450,6 +562,8 @@ int main(void)
     proba_objecta_nidata();
     proba_ison_multilineum();
     proba_binarium();
+    proba_ref_deestem();
+    proba_constructiones_ignotas();
 
     printf("\n");
     if (errores == 0)

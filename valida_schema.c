@@ -114,7 +114,7 @@ int main(int argc, char **argv)
             return 2;
         }
         char err[256];
-        if (schema_valida(&s, pp, n, err, sizeof(err)) == 0) {
+        if (schema_valida(&s, pp, n, datum, err, sizeof(err)) == 0) {
             printf("validum.\n");
             exitus = 0;
         } else {

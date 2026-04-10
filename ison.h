@@ -132,21 +132,36 @@ int ison_pro_quaque_linea_s(const char *isonl, ison_linea_s_functor_t f, void *c
 typedef enum {
     TYPUS_CHORDA = 0,    /* chorda (string) */
     TYPUS_NUMERUS,       /* integer ("integer") */
-    TYPUS_FRACTUM        /* numerus fractus ("number" vel "fractum") */
+    TYPUS_FRACTUM,       /* numerus fractus ("number" vel "fractum") */
+    TYPUS_SERIES,        /* series (array) */
+    TYPUS_OBJECTUM       /* objectum per $ref */
 } typus_t;
+
+/* modus schematis */
+typedef enum {
+    SCHEMA_PROPRIETATES = 0,  /* habet "properties" */
+    SCHEMA_UNUM_EX            /* habet "oneOf" */
+} schema_modus_t;
+
+#define SCHEMA_ONEOF_MAX 16
 
 /* unus campus schematis */
 typedef struct {
     char nomen[64];
     typus_t typus;
     int necessarium;        /* 1 si in "required" */
+    char ref[128];          /* $ref via pro items (series) vel objectum */
 } schema_campus_t;
 
 /* schema integrum */
 typedef struct {
     char titulus[128];
+    schema_modus_t modus;
     schema_campus_t campi[SCHEMA_CAMPI_MAX];
     int num_campi;
+    char oneof_ref[SCHEMA_ONEOF_MAX][128];
+    int num_oneof;
+    char directorium[256];  /* directorium schematis pro $ref */
 } schema_t;
 
 /*
@@ -163,11 +178,12 @@ int schema_lege_plicam(const char *via, schema_t *s);
 
 /*
  * schema_valida — validat paria contra schema.
+ * datum: chorda ISON cruda (pro validatione serierum cum $ref). potest esse NULL.
  * reddit 0 si validum. si invalidum, scribit errorem in buf et reddit -1.
  */
 int schema_valida(
     const schema_t *s, const ison_par_t *pp, int n,
-    char *error, size_t mag
+    const char *datum, char *error, size_t mag
 );
 
 /*
