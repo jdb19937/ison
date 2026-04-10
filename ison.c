@@ -846,6 +846,47 @@ int ison_pro_quaque_linea_s(const char *isonl, ison_linea_s_functor_t f, void *c
     return n;
 }
 
+int ison_pro_quoque_elemento(
+    const char *ison, const char *via,
+    ison_elementum_functor_t f, void *ctx
+) {
+    const char *p;
+    if (via)
+        p = ison_naviga(ison, via);
+    else
+        p = ison;
+    if (!p)
+        return 0;
+    p = transili_spatia(p);
+    if (*p != '[')
+        return 0;
+    p = transili_spatia(p + 1);
+
+    int n = 0;
+    while (*p && *p != ']') {
+        const char *ini = p;
+        p = nav_transili_valorem(p);
+        if (p == ini)
+            break;
+
+        size_t lon = (size_t)(p - ini);
+        char *elem = malloc(lon + 1);
+        if (!elem)
+            break;
+        memcpy(elem, ini, lon);
+        elem[lon] = '\0';
+
+        f(elem, ctx);
+        free(elem);
+        n++;
+
+        p = transili_spatia(p);
+        if (*p == ',')
+            p = transili_spatia(p + 1);
+    }
+    return n;
+}
+
 int ison_claves(const char *ison, char claves[][64], int max)
 {
     const char *p = transili_spatia(ison);

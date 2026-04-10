@@ -124,6 +124,22 @@ int ison_pro_quaque_linea(const char *isonl, ison_linea_functor_t f, void *ctx);
 typedef void (*ison_linea_s_functor_t)(const char *linea, void *ctx);
 int ison_pro_quaque_linea_s(const char *isonl, ison_linea_s_functor_t f, void *ctx);
 
+/* --- series iteratio --- */
+
+/*
+ * ison_pro_quoque_elemento — iterat per elementa seriei JSON.
+ * series: chorda JSON seriei (e.g. "[{...},{...}]") vel
+ *         objectum cum campo quod seriem continet.
+ * via: via ad seriem in obiecto (e.g. "sidera"), vel NULL si series ipsa.
+ * functor vocatur cum chorda cruda cuiusque elementi.
+ * reddit numerum elementorum processorum.
+ */
+typedef void (*ison_elementum_functor_t)(const char *elementum, void *ctx);
+int ison_pro_quoque_elemento(
+    const char *ison, const char *via,
+    ison_elementum_functor_t f, void *ctx
+);
+
 /* --- schema --- */
 
 #define SCHEMA_CAMPI_MAX 32
