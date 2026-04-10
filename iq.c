@@ -239,6 +239,26 @@ int main(int argc, char **argv)
         datum = ison;
     }
 
+    /* valida syntaxin ante formationem */
+    {
+        const char *d = datum;
+        while (*d == ' ' || *d == '\t' || *d == '\n' || *d == '\r')
+            d++;
+        const char *post = nav_transili_valorem(d);
+        if (post == d) {
+            fprintf(stderr, "iq: syntaxis mala\n");
+            free(ison);
+            return 1;
+        }
+        while (*post == ' ' || *post == '\t' || *post == '\n' || *post == '\r')
+            post++;
+        if (*post != '\0') {
+            fprintf(stderr, "iq: syntaxis mala\n");
+            free(ison);
+            return 1;
+        }
+    }
+
     if (compacte) {
         char *comp = ison_compacta(datum);
         if (comp) {

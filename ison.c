@@ -392,7 +392,10 @@ const char *nav_transili_valorem(const char *p)
                 p = transili_spatia(p);
                 if (*p == ':')
                     p++;
+                const char *ante = p;
                 p = nav_transili_valorem(p);                  /* valor */
+                if (p == ante)
+                    return p; /* valor invalidus */
                 p = transili_spatia(p);
                 if (*p == ',')
                     p = transili_spatia(p + 1);
@@ -405,7 +408,10 @@ const char *nav_transili_valorem(const char *p)
             p++;
             p = transili_spatia(p);
             while (*p && *p != ']') {
+                const char *ante = p;
                 p = nav_transili_valorem(p);
+                if (p == ante)
+                    return p; /* valor invalidus */
                 p = transili_spatia(p);
                 if (*p == ',')
                     p = transili_spatia(p + 1);

@@ -410,6 +410,60 @@ static void proba_viam_cum_indice(void)
     free(via);
 }
 
+static void proba_syntaxin_malam(void)
+{
+    printf("syntaxis mala:\n");
+
+    char *via = scribe_plicam_temp("iq_mal", "{\"a\":b\"}");
+    char mandatum[512];
+
+    snprintf(
+        mandatum, sizeof(mandatum),
+        "./iq %s >/dev/null 2>&1", via
+    );
+    int r = system(mandatum);
+    adfirma(WEXITSTATUS(r) == 1, "valor sine apicibus reicitur");
+
+    remove(via);
+    free(via);
+
+    /* index cum valore invalido */
+    via = scribe_plicam_temp("iq_mal2", "[1, b, 3]");
+    snprintf(
+        mandatum, sizeof(mandatum),
+        "./iq %s >/dev/null 2>&1", via
+    );
+    r = system(mandatum);
+    adfirma(WEXITSTATUS(r) == 1, "index cum valore invalido reicitur");
+
+    remove(via);
+    free(via);
+
+    /* clavis sine valore */
+    via = scribe_plicam_temp("iq_mal3", "{\"a\":}");
+    snprintf(
+        mandatum, sizeof(mandatum),
+        "./iq %s >/dev/null 2>&1", via
+    );
+    r = system(mandatum);
+    adfirma(WEXITSTATUS(r) == 1, "clavis sine valore reicitur");
+
+    remove(via);
+    free(via);
+
+    /* textus nudus */
+    via = scribe_plicam_temp("iq_mal4", "non est ison");
+    snprintf(
+        mandatum, sizeof(mandatum),
+        "./iq %s >/dev/null 2>&1", via
+    );
+    r = system(mandatum);
+    adfirma(WEXITSTATUS(r) == 1, "textus nudus reicitur");
+
+    remove(via);
+    free(via);
+}
+
 static void proba_idempotentiam(void)
 {
     printf("idempotentia:\n");
@@ -461,6 +515,7 @@ int main(void)
     proba_plicam_non_inventam();
     proba_compactam_cum_via();
     proba_viam_cum_indice();
+    proba_syntaxin_malam();
     proba_idempotentiam();
 
     printf("\n");
