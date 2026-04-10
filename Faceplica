@@ -24,16 +24,20 @@ $(BIBLIOTHECA): $(OBJECTA)
 
 PREFIX = /opt/apotheca
 
-colloca: omnia
-	install -d $(PREFIX)/lib $(PREFIX)/include/ison
+valida_schema: valida_schema.c $(BIBLIOTHECA)
+	$(CC) $(CFLAGS) -o $@ $< -L. -lison
+
+colloca: omnia valida_schema
+	install -d $(PREFIX)/lib $(PREFIX)/include/ison $(PREFIX)/bin
 	install -m 644 $(BIBLIOTHECA) $(PREFIX)/lib/
 	install -m 644 ison.h $(PREFIX)/include/ison/
+	install -m 755 valida_schema $(PREFIX)/bin/
 
 purga:
-	rm -f $(OBJECTA) $(BIBLIOTHECA) proba_ison
+	rm -f $(OBJECTA) $(BIBLIOTHECA) proba_ison proba_schema valida_schema
 
 linte:
-	insinulint -c ison.c ison.h proba_ison.c proba_schema.c
+	insinulint -c ison.c ison.h proba_ison.c proba_schema.c valida_schema.c
 
 proba_ison: proba_ison.c $(BIBLIOTHECA)
 	$(CC) $(CFLAGS) -o $@ $< -L. -lison

@@ -2,9 +2,11 @@
  * proba_schema.c — probationes validationis schematis
  */
 
-#include <stdio.h>
-#include <string.h>
 #include "ison.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 static int errores = 0;
 
@@ -206,6 +208,68 @@ static void proba_isonl_validationem(void)
     adfirma(schema_valida_isonl(&s, malum) > 0, "isonl cum erroribus");
 }
 
+/* scribit chordam in plicam temporariam, reddit viam */
+static char *scribe_plicam_temp(const char *praefixum, const char *contentum)
+{
+    char *via = malloc(256);
+    snprintf(via, 256, "/tmp/%s_XXXXXX", praefixum);
+    int fd = mkstemp(via);
+    if (fd < 0) { free(via); return NULL; }
+
+    FILE *f = fdopen(fd, "w");
+    fputs(contentum, f);
+    fclose(f);
+    return via;
+}
+
+static void proba_binarium(void)
+{
+    printf("binarium valida_schema:\n");
+
+    const char *schema_ison =
+        "{\"titulus\":\"Persona\","
+        "\"properties\":{\"nomen\":{\"type\":\"string\"},"
+        "\"aetas\":{\"type\":\"integer\"}},"
+        "\"required\":[\"nomen\"]}";
+
+    const char *datum_bonum = "{\"nomen\":\"Marcus\",\"aetas\":\"30\"}";
+    const char *datum_malum = "{\"aetas\":\"xxx\"}";
+
+    char *via_schema = scribe_plicam_temp("schema", schema_ison);
+    char *via_bonum  = scribe_plicam_temp("bonum", datum_bonum);
+    char *via_malum  = scribe_plicam_temp("malum", datum_malum);
+
+    adfirma(via_schema && via_bonum && via_malum, "plicae temporariae creatae");
+
+    char mandatum[512];
+    int r;
+
+    /* datum validum */
+    snprintf(mandatum, sizeof(mandatum),
+        "./valida_schema %s %s >/dev/null 2>&1", via_schema, via_bonum
+    );
+    r = system(mandatum);
+    adfirma(WEXITSTATUS(r) == 0, "binarium accipit datum validum");
+
+    /* datum invalidum */
+    snprintf(mandatum, sizeof(mandatum),
+        "./valida_schema %s %s >/dev/null 2>&1", via_schema, via_malum
+    );
+    r = system(mandatum);
+    adfirma(WEXITSTATUS(r) == 1, "binarium reicit datum invalidum");
+
+    /* sine argumentis */
+    r = system("./valida_schema >/dev/null 2>&1");
+    adfirma(WEXITSTATUS(r) == 2, "binarium sine argumentis reddit 2");
+
+    remove(via_schema);
+    remove(via_bonum);
+    remove(via_malum);
+    free(via_schema);
+    free(via_bonum);
+    free(via_malum);
+}
+
 int main(void)
 {
     printf("--- probationes schematis ---\n\n");
@@ -217,6 +281,7 @@ int main(void)
     proba_campum_ignotum();
     proba_fractum();
     proba_isonl_validationem();
+    proba_binarium();
 
     printf("\n");
     if (errores == 0)
