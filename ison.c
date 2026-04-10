@@ -975,7 +975,8 @@ int schema_lege(const char *ison, schema_t *s)
                     if (
                         strcmp(pk[k], "type") != 0 &&
                         strcmp(pk[k], "$ref") != 0 &&
-                        strcmp(pk[k], "items") != 0
+                        strcmp(pk[k], "items") != 0 &&
+                        strcmp(pk[k], "description") != 0
                     ) {
                         free(prop_json);
                         free(prop_crudum);
