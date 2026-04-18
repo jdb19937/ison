@@ -5,30 +5,23 @@
 #   face purga      — dele omnia aedificata
 #   face proba      — aedifica et curre probationes (si adsunt)
 
-CC      ?= cc
-AR      ?= ar
-CFLAGS  ?= -Wall -Wextra -pedantic -std=c99 -O2
-ARFLAGS  = rcs
-
-FONTES  = ison.c
-OBJECTA = $(FONTES:.c=.o)
+PREFIX      = /opt/apotheca
+OBJECTA     = ison.o
 BIBLIOTHECA = libison.a
 
 omnia: $(BIBLIOTHECA) valida_schema iq
 
 $(BIBLIOTHECA): $(OBJECTA)
-	$(AR) $(ARFLAGS) $@ $^
+	ar rcs $@ $^
 
 %.o: %.c ison.h
-	$(CC) $(CFLAGS) -c -o $@ $<
+	ccc $<
 
-PREFIX = /opt/apotheca
+valida_schema: valida_schema.o $(BIBLIOTHECA)
+	ldi $^
 
-valida_schema: valida_schema.c $(BIBLIOTHECA)
-	$(CC) $(CFLAGS) -o $@ $< -L. -lison
-
-iq: iq.c $(BIBLIOTHECA)
-	$(CC) $(CFLAGS) -o $@ $< -L. -lison
+iq: iq.o $(BIBLIOTHECA)
+	ldi $^
 
 colloca: omnia
 	install -d $(PREFIX)/lib $(PREFIX)/include/ison $(PREFIX)/bin
@@ -39,18 +32,19 @@ colloca: omnia
 
 purga:
 	rm -f $(OBJECTA) $(BIBLIOTHECA) proba_ison proba_schema valida_schema iq proba_iq
+	rm -f valida_schema.o iq.o proba_iq.o proba_schema.o proba_ison.o
 
 linte:
 	insinulint -c ison.c ison.h proba_ison.c proba_schema.c valida_schema.c iq.c proba_iq.c
 
-proba_ison: proba_ison.c $(BIBLIOTHECA)
-	$(CC) $(CFLAGS) -o $@ $< -L. -lison
+proba_ison: proba_ison.o $(BIBLIOTHECA)
+	ldi $^
 
-proba_schema: proba_schema.c $(BIBLIOTHECA)
-	$(CC) $(CFLAGS) -o $@ $< -L. -lison
+proba_schema: proba_schema.o $(BIBLIOTHECA)
+	ldi $^
 
-proba_iq: proba_iq.c
-	$(CC) $(CFLAGS) -o $@ $<
+proba_iq: proba_iq.o
+	ldi $^
 
 proba: proba_ison proba_schema valida_schema iq proba_iq
 	./proba_ison
