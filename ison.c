@@ -371,7 +371,7 @@ static const char *nav_transili_chordam(const char *p)
             p += 2;
             continue;
         }
-        if (*p == '"')  { return p + 1; }
+        if (*p == '"') { return p + 1; }
         p++;
     }
     return p;
@@ -420,9 +420,12 @@ const char *nav_transili_valorem(const char *p)
                 p++;
             return p;
         }
-    case 't': return p + 4; /* true */
-    case 'f': return p + 5; /* false */
-    case 'n': return p + 4; /* null */
+    case 't':
+        return p + 4; /* true */
+    case 'f':
+        return p + 5; /* false */
+    case 'n':
+        return p + 4; /* null */
     default: /* numerus */
         if (*p == '-')
             p++;
