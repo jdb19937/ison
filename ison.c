@@ -1052,14 +1052,40 @@ int schema_lege(const char *ison, schema_t *s)
                         "properties.%s.items.$ref", nomina[i]
                     );
                     char *ref = ison_da_chordam(ison, via_ref);
-                    if (!ref) {
-                        /* array sine items.$ref */
-                        free(typ);
-                        free(prop_crudum);
-                        return -1;
+                    if (ref) {
+                        snprintf(c->ref, sizeof(c->ref), "%s", ref);
+                        free(ref);
+                    } else {
+                        /* aut items.type primitivus */
+                        char via_type[128];
+                        snprintf(
+                            via_type, sizeof(via_type),
+                            "properties.%s.items.type", nomina[i]
+                        );
+                        char *itype = ison_da_chordam(ison, via_type);
+                        if (!itype) {
+                            free(typ);
+                            free(prop_crudum);
+                            return -1;
+                        }
+                        if (strcmp(itype, "string") == 0)
+                            c->typus_items = TYPUS_CHORDA;
+                        else if (strcmp(itype, "integer") == 0)
+                            c->typus_items = TYPUS_NUMERUS;
+                        else if (
+                            strcmp(itype, "number")  == 0 ||
+                            strcmp(itype, "fractum") == 0
+                        )
+                            c->typus_items = TYPUS_FRACTUM;
+                        else {
+                            free(itype);
+                            free(typ);
+                            free(prop_crudum);
+                            return -1;
+                        }
+                        free(itype);
+                        c->ref[0] = '\0';
                     }
-                    snprintf(c->ref, sizeof(c->ref), "%s", ref);
-                    free(ref);
                 } else {
                     /* typus ignotus */
                     free(typ);
@@ -1315,30 +1341,13 @@ static int valida_proprietates(
                 return -1;
         }
 
-        /* TYPUS_SERIES — validat elementa seriei contra $ref */
-        if (c->typus == TYPUS_SERIES && datum && c->ref[0]) {
+        /* TYPUS_SERIES — validat elementa seriei */
+        if (c->typus == TYPUS_SERIES && datum) {
             char *crudum = ison_da_crudum(datum, c->nomen);
             if (!crudum || crudum[0] != '[') {
                 snprintf(
                     error, mag,
                     "campus \"%s\": expectatur series", c->nomen
-                );
-                free(crudum);
-                return -1;
-            }
-
-            /* verifica schema referens */
-            char via_ref[384];
-            snprintf(
-                via_ref, sizeof(via_ref), "%s%s",
-                s->directorium, c->ref
-            );
-            schema_t sub;
-            if (schema_lege_plicam(via_ref, &sub) != 0) {
-                snprintf(
-                    error, mag,
-                    "campus \"%s\": schema referens legi non potest: %s",
-                    c->nomen, c->ref
                 );
                 free(crudum);
                 return -1;
@@ -1356,7 +1365,10 @@ static int valida_proprietates(
                     p++;
                     continue;
                 }
-                if (*p == '{') {
+                if (c->ref[0]) {
+                    /* elementa per $ref objecta */
+                    if (*p != '{')
+                        break;
                     const char *ini = p;
                     const char *fin = nav_transili_valorem(p);
                     size_t lon      = (size_t)(fin - ini);
@@ -1376,10 +1388,33 @@ static int valida_proprietates(
                         return -1;
                     }
                     p = fin;
-                    idx++;
                 } else {
-                    break;
+                    /* elementa primitiva: charae, integri, fractumve */
+                    int ok = 0;
+                    if (c->typus_items == TYPUS_CHORDA) {
+                        ok = (*p == '"');
+                    } else if (
+                        c->typus_items == TYPUS_NUMERUS ||
+                        c->typus_items == TYPUS_FRACTUM
+                    ) {
+                        const char *q = p;
+                        if (*q == '-' || *q == '+')
+                            q++;
+                        ok = (*q >= '0' && *q <= '9') ||
+                            (c->typus_items == TYPUS_FRACTUM && *q == '.');
+                    }
+                    if (!ok) {
+                        snprintf(
+                            error, mag,
+                            "campus \"%s\"[%d]: elementum typi invalidi",
+                            c->nomen, idx
+                        );
+                        free(crudum);
+                        return -1;
+                    }
+                    p = nav_transili_valorem(p);
                 }
+                idx++;
             }
             free(crudum);
         }

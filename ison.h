@@ -167,6 +167,7 @@ typedef struct {
     typus_t typus;
     int necessarium;        /* 1 si in "required" */
     char ref[128];          /* $ref via pro items (series) vel objectum */
+    typus_t typus_items;    /* typus elementorum si series cum primitivis */
 } schema_campus_t;
 
 /* schema integrum */
